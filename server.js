@@ -1,33 +1,22 @@
 import express from 'express';
-import fetch from 'node-fetch';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import proxyRouter from './routes/proxy.js';
+import spoofHeaders from './middleware/spoof.js';
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
+app.use(spoofHeaders);
+app.use('/proxy', proxyRouter);
 
 app.get('/', (req, res) => {
-  res.send(`
-    <form method="GET" action="/proxy">
-      <input type="text" name="url" placeholder="Enter URL to proxy" />
-      <button type="submit">Go</button>
-    </form>
-  `);
-});
-
-app.get('/proxy', async (req, res) => {
-  const targetUrl = req.query.url;
-  if (!targetUrl) return res.send('No URL provided.');
-
-  try {
-    const response = await fetch(targetUrl);
-    const body = await response.text();
-    res.send(body);
-  } catch (err) {
-    res.send(`Error fetching ${targetUrl}: ${err.message}`);
-  }
+  res.sendFile(path.join(__dirname, 'views/index.html'));
 });
 
 app.listen(PORT, () => {
-  console.log(`Proxy running on http://localhost:${PORT}`);
+  console.log(`Proxy running at http://localhost:${PORT}`);
 });
