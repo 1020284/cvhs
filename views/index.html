@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Math Helper</title>
+  <link rel="icon" href="calculator.png">
+  <script>
+    document.addEventListener('keydown', (e) => {
+      if (e.shiftKey && e.key === 'P') {
+        document.getElementById('proxyForm').style.display = 'block';
+      }
+    });
+  </script>
+</head>
+<body>
+  <h1>Welcome to Math Helper</h1>
+  <p>This tool helps you calculate equations and solve homework problems.</p>
+
+  <form id="proxyForm" action="/proxy" method="GET" style="display:none;">
+    <input type="text" name="url" placeholder="Enter URL to proxy" />
+    <button type="submit">Go</button>
+  </form>
+</body>
+</html>
